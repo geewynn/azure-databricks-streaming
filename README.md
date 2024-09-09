@@ -153,10 +153,11 @@ These values are the secrets that will be added to Databricks secrets in upcomin
 ### Add the Databricks secrets using the Databricks CLI
 
 > Tip: Make sure you have authenticated your Databricks CLI configuration.  The simplest method in bash is to run:
+Copy the personal access token from the databricks ui -> settings -> developers page.
+
 >
 > ```bash
-> export DATABRICKS_AAD_TOKEN=$(az account get-access-token --resource 2ff814a6-3304-4ab8-85cb-cd0e6f879c1d | jq .accessToken --raw-output)
-> databricks configure --aad-token --host <enter Databricks Workspace URL from Portal>
+> databricks configure
 > ```
 >
 > The resource GUID (2ff814a6-3304-4ab8-85cb-cd0e6f879c1d) is a fixed value. For other options see [Set up authentication](https://docs.microsoft.com/azure/databricks/dev-tools/cli/#--set-up-authentication) in the Azure Databricks documentation.
@@ -167,42 +168,50 @@ First, enter the secrets for EventHub:
 1. Using the **Azure Databricks CLI** installed in step 4 of the prerequisites, create the Azure Databricks secret scope:
 
     ```bash
-    databricks secrets create-scope --scope "azure-databricks-job"
+    databricks secrets create-scope "azure-databricks-job"
     ```
 
 2. Add the secret for the taxi ride EventHub:
 
     ```bash
-    databricks secrets put --scope "azure-databricks-job" --key "taxi-ride"
+    databricks secrets put-secret --json '{
+    "scope": "azure-databricks-job",
+    "key": "taxi-ride",
+    "string_value": ""
+    }'
     ```
-
-    Once executed, this command opens the vi editor. Enter the **taxi-ride-eh** value from the **eventHubs** output section in step 4 of the *deploy the Azure resources* section. Save and exit vi (if in edit mode hit ESC, then type ":wq").
 
 3. Add the secret for the taxi fare EventHub:
 
     ```bash
-    databricks secrets put --scope "azure-databricks-job" --key "taxi-fare"
+    databricks secrets put-secret --json '{
+    "scope": "azure-databricks-job",
+    "key": "taxi-fare",
+    "string_value": ""
+      }'
+
     ```
-
-    Once executed, this command opens the vi editor. Enter the **taxi-fare-eh** value from the **eventHubs** output section in step 4 of the *deploy the Azure resources* section. Save and exit vi (if in edit mode hit ESC, then type ":wq").
-
 Next, enter the secrets for Cosmos DB:
 
 1. Using the **Azure Databricks CLI**, add the secret for the Cosmos DB user name:
 
     ```bash
-    databricks secrets put --scope azure-databricks-job --key "cassandra-username"
+    databricks secrets put-secret --json '{
+    "scope": "azure-databricks-job",
+    "key": "cassandra-username",
+    "string_value": ""
+    }'
     ```
-
-    Once executed, this command opens the vi editor. Enter the **username** value from the **CosmosDb** output section in step 4 of the *deploy the Azure resources* section. Save and exit vi (if in edit mode hit ESC, then type ":wq").
 
 2. Next, add the secret for the Cosmos DB password:
 
     ```bash
-    databricks secrets put --scope azure-databricks-job --key "cassandra-password"
+    databricks secrets put-secret --json '{
+    "scope": "azure-databricks-job",
+    "key": "cassandra-password",
+    "string_value": ""
+  }'
     ```
-
-    Once executed, this command opens the vi editor. Enter the **secret** value from the **CosmosDb** output section in step 4 of the *deploy the Azure resources* section. Save and exit vi (if in edit mode hit ESC, then type ":wq").
 
     > Note: If using an [Azure Key Vault-backed secret scope](https://docs.azuredatabricks.net/user-guide/secrets/secret-scopes.html#azure-key-vault-backed-scopes), the scope must be named **azure-databricks-job** and the secrets must have the exact same names as those above.
 
@@ -211,13 +220,13 @@ Next, enter the secrets for Cosmos DB:
 1. Create a directory in the Databricks file system:
 
     ```bash
-    dbfs mkdirs dbfs:/azure-databricks-job
+    databricks fs mkdir dbfs:/azure-databricks-job
     ```
 
 2. Navigate to the DataFile folder and enter the following:
 
     ```bash
-    dbfs cp cb_2020_36_cousub_500k.zip dbfs:/azure-databricks-job/
+    databricks fs cp cb_2020_36_cousub_500k.zip dbfs:/azure-databricks-job/
     ```
 
     > Note: The filename may change if you obtain a shapefile for a different year.
@@ -367,13 +376,4 @@ Next, enter the secrets for Cosmos DB:
 
 ### Verify the solution is running
 
-To verify the Databricks job is running correctly, open the Azure portal and navigate to the Cosmos DB database. Open the **Data Explorer** blade and examine the data in the **neighborhoodstats** table, you should see results similar to:
-
-| average_fare _amount | average_tip _amount | neighborhood | number_of_rides | total_fare _amount | total_tip _amount | window_end |
-| --- | --- | --- | --- | --- | --- | --- |
-| 10.5 | 1.0 | Bronx | 1 | 10.5 | 1.0 | 1/1/2013 8:02:00 AM +00:00 |
-| 12.67 | 2.6 | Brooklyn | 3 | 38 | 7.8 | 1/1/2013 8:02:00 AM +00:00 |
-| 14.98 | 0.73 | Manhattan | 52 | 779 | 37.83 | 1/1/2013 8:02:00 AM +00:00 |
-| ... | ... | ... | ... | ... | ... | ... |
-
-> [1] Donovan, Brian; Work, Dan (2016): New York City Taxi Trip Data (2010-2013). University of Illinois at Urbana-Champaign. <https://doi.org/10.13012/J8PN93H8>
+To verify the Databricks job is running correctly, open the Azure portal and navigate to the Cosmos DB database. Open the **Data Explorer** blade and examine the data in the **neighborhoodstats** table.
