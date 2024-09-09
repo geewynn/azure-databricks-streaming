@@ -16,7 +16,7 @@ A deployment for this reference architecture is available on [GitHub](https://gi
 
 2. Install [Docker](https://www.docker.com/) to run the data generator.
 
-3. Install [Azure CLI 2.0](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest).
+3. Install [Azure CLI 2.63](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest).
 
 4. Install [Databricks CLI](https://docs.microsoft.com/azure/databricks/dev-tools/cli/).
 
@@ -26,11 +26,7 @@ A deployment for this reference architecture is available on [GitHub](https://gi
     az login
     ```
 
-6. Optional - Install a Java IDE, with the following resources:
-    - JDK 1.8
-    - Scala SDK 2.12
-    - Maven 3.6.3
-    > Note: Instructions are included for building via a docker container if you do not want to install a Java IDE.
+6. Instructions are included for building via a docker container if you do not want to install a Java IDE.
 
 ### Download the New York City taxi and neighborhood data files
 
@@ -245,11 +241,9 @@ Next, enter the secrets for Cosmos DB:
 
 ### Create a Databricks cluster
 
-1. In the Databricks workspace, click **Compute**, then click **Create cluster**. Enter the cluster name you created in step 3 of the **configure custom logging for the Databricks job** section above.
+1. In the Databricks workspace, click **Compute**, then click **Create cluster**.
 
-1. Select **Standard** for **Cluster Mode**.
-
-1. Set **Databricks runtime version** to **7.3 Extended Support (Scala 2.12, Apache Spark 3.0.1)**
+1. Set **Databricks runtime version** to **14.3 LTS (includes Apache Spark 3.5.0, Scala 2.12)**
 
 1. Deselect **Enable autoscaling**.
 
@@ -260,14 +254,6 @@ Next, enter the secrets for Cosmos DB:
 1. Set **Driver Type** to **Same as worker**
 
    #### Optional - Configure Azure Log Analytics
-
-   1. Follow the instructions in [Monitoring Azure Databricks](https://github.com/mspnp/spark-monitoring) to build the monitoring library and upload the resulting library files to your workspace.
-
-   1. Click on **Advanced Options** then **Init Scripts**.
-
-   1. Enter **dbfs:/databricks/spark-monitoring/spark-monitoring.sh**.
-
-   1. Click the **Add** button.
 
 1. Click the **Create Cluster** button.
 
@@ -281,13 +267,13 @@ Next, enter the secrets for Cosmos DB:
 
 4. In the **Library Source** control, select **Maven**.
 
-5. Under the **Maven Coordinates** text box, enter `com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.21`.
+5. Under the **Maven Coordinates** text box, enter `com.microsoft.azure:azure-eventhubs-spark_2.12:2.3.22`.
 
 6. Select **Install**.
 
-8. Repeat steps 3 - 6 for the `com.datastax.spark:spark-cassandra-connector-assembly_2.12:3.0.1` Maven coordinate.
+8. Repeat steps 3 - 6 for the `com.datastax.spark:spark-cassandra-connector-assembly_2.12:3.5.0` Maven coordinate.
 
-9. Repeat steps 3 - 5 for the `org.geotools:gt-shapefile:23.0` Maven coordinate.
+9. Repeat steps 3 - 5 for the `org.geotools:gt-shapefile:31.0` Maven coordinate.
 
 10. Enter `https://repo.osgeo.org/repository/release/` in the **Repository** text box.
 
